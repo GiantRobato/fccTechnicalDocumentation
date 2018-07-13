@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Unity Basics Technical Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="prism.css">
+    <script src="prism.js"></script>    
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js" ></script>
+</head>
+<body>
+<nav id="navbar">
+    <header>Unity 3D</header>
+    <a href="#Introduction" class="nav-link">Introduction</a>    
+    <a href="#Installation" class="nav-link">Installation</a>    
+    <a href="#Windows" class="nav-link">Windows</a>    
+    <a href="#Level_Design" class="nav-link">Level Design</a>        
+    <a href="#Scripting" class="nav-link">Scripting</a>    
+</nav>
+<main id="main-doc">
+    <section class="main-section" id="Introduction">
+        <header>Introduction</header>
+        <p>From Unity's website: "More than an engine, Unity offers everything you need to build beautiful and engaging content, boost your productivity, and connect with your audience. Tools and resources include continuous engine updates, multiplatform support, and documentation, forums and tutorials."</p>
+    </section>
+    <section class="main-section" id="Installation">
+        <header>Installation</header>
+        <p>Go to the following link to the <a>Personal Unity Download Page</a> and then download Unity for your specific OS.</p>
+        <img src="images/unityDownload.PNG">
+    </section>
+    <section class="main-section" id="Windows">
+        <header>Windows</header>
+        <p>Here are a list of some of the many windows you'll use in Unity:</p>
+        <ul>
+            <li>Hierarchy</li>
+            <li>Project</li>
+            <li>Console</li>
+            <li>Inspector</li>
+            <li>Scene</li>
+            <li>Game</li>
+        </ul>
+        <p></p>        
+    </section>
+    <section class="main-section" id="Level_Design">
+        <header>Level Design</header>
+        <p>Designing levels into unity is pretty easy. Unity allows importing of 3D Models made in programs like Blender and Maya but also contain some primitive types that you can use as well. In our case we will make a simple level where wa can move around a ball along the ground using the keyboard.</p>
+        <p>We want to add 2 things to our scene. In the hierarchy panel, right click and select "3D Object > Plane". You should see a gameobject named "Plane" and a white plane added in the game as shown in the Game Window</p>
+        <img src="images/planeAdded.PNG">
+        <p>Now we want to add a ball to our scene. Do the same thing as previous but instead, select the "Sphere" object. Now we want to position the ball above the the plane, we can do this by switching the view from "Game" to "Scene" and then adjusting the position of the Sphere.</p>
+        <img src="images/sphereAdded.PNG">
+        <p>Now we can adjust the position of our sphere by either clicking on the sphere in the Hierarchy Window, or by clicking on the sphere in the Scene Window.</p>
+        <img src="images/sphereSelected.PNG">
+        <p>If you don't see the same thing you might have a different gizmo selected. At the top are several gizmos, for the purposes of this demo we'll the first four which are: Hand Tool, Move Tool, Rotate Tool, and Scale Tool. Select the Move tool if it isn't already selected.</p>
+        <img src="images/gizmoBar.PNG">
+        <p>Click and drag the green arrow UP until the sphere is no longer intersecting the plane. We also want to move the Camera so that it's looking down and at a slight angle towards the ball and plane. You can achieve this by using the move and rotate tools on the Main Camera. You should now have something like this:</p>
+        <img src="images/movedCamera.PNG">
+        <p>Now if we hit play, we can see in the game view that the ball stays floating in mid-air. We want the ball to fall to the ground and bounce. We can do this by selecting the Sphere and adding the RigidBody component.</p>
+        <img src="images/AddRigidbody.png">
+        <p>If we hit play, we should now see the ball drop to the plane. (If you don't see this, try moving the ball higher). Now let's program this ball to bounce up and down!</p>
+    </section>    
+    <section class="main-section" id="Scripting">
+        <header>Scripting</header>
+        <p>Programming in Unity uses an external editor, like Visual Studios, to edit scripts that affect the behavior of gameobjects in the scene. In this example, we are going to make the ball move up and down via scripting. First, right click in the project tab and create a new C# script and name it "Bounce"</p>
+        <img src="images/createScript.png">
+        <p>Double click on the script and you should see it pop up in the editor and see something like this:</p>
+<pre><code class="lang-csharp">using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Bounce : MonoBehaviour {
+
+    // Use this for initialization
+    void Start () {
+        
+    }
+    
+    // Update is called once per frame
+    void Update () {
+        
+    }
+}
+</code></pre> 
+        <p>The first three lines are libraries used by the script. In our script we automatically create a class the same name as our script called "Bounce". This class has two major functions that we'll deal with: Start - which is where we do any initialization and is called only once, and Update - where we will be putting the meat of our code. The first thing we need for our bounce script to work is a reference to our sphere GameObject, specifically the Transform component which we need in order to know the position of our bal. We can do that with the following: </p>               
+<pre><code class="lang-csharp">public class Bounce : MonoBehaviour {
+    private Transform ballTransform;
+
+    //
+    //Rest of Code
+    //
+}
+</code></pre>
+    <p>Now we need to connect this scripts ballTransform variable with the Transform of our Sphere. We can do that by adding the following to the Start function:</p>
+<pre><code class="lang-csharp">void Start () {
+    ballTransform = this.transform;
+}
+</code></pre>
+    <p>Here we are accessing the parent GameObject that we are attached this script to (more on this later) and getting back the transform component and setting our variable of ballTransform to it. In Unity, let's now attach this script by adding it as a component. First select the sphere and then select "Add Component" and then search for the Bounce script you just made.</p>
+    <img src="images/addBounceScript.png">
+    <p>Now we want to add the main bounce functionaly which goes something like this in pseudocode:</p>
+<pre><code class="lang-csharp">if pos &lt;= 0:
+    addForce(up);
+</code></pre>
+    <p>In code this looks like this:</p>
+<pre><code class="lang-csharp">if(ballTranform.position.y &lt;= 0.5f) {
+    this.GetComponent&lt;Rigidbody&gt;().AddForce(250 * Vector3.up);
+}
+</code></pre>
+    <p>Here we check if ths position of the ball in the Y-Axis (Y is up in Unity) is less than or = to 0.5f. The reason we use 0.5 instead of zero is because the position is centered on the ball but the collision occurs at 1/2 the size of the ball, hence the offset of 0.5. To actually add force we have to get a reference to the balls RigidBody component and use the AddForce function which takes in a vector with the direction and magnitude of force to be applied. Now when you hit play, you should see the ball bounce when it hits the plane.</p>
+    </section>
+</main>    
+</body>
+</html>
